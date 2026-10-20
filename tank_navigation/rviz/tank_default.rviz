@@ -63,8 +63,8 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 3
-      Size (m): 0.03
+      Size (Pixels): 2
+      Size (m): 0.008
       Style: Points
       Topic:
         Depth: 5

@@ -1,15 +1,15 @@
 # Configuration for robot_localization EKF node
-# Fuses /wheel/odom (x, y, vx) and /imu/data (yaw, vyaw)
+# Fuses /wheel/odom (vx, vyaw) and /imu/data (yaw, vyaw)
 # Broadcasts TF: odom -> base_footprint
 
 ekf_filter_node:
   ros__parameters:
-    frequency: 50.0
+    frequency: 30.0
     two_d_mode: true
     sensor_timeout: 0.1
     transform_time_offset: 0.0
     transform_timeout: 0.0
-    print_diagnostics: true
+    print_diagnostics: false
     debug: false
 
     map_frame: map
@@ -21,11 +21,12 @@ ekf_filter_node:
     publish_acceleration: false
 
     # 1. Wheel Odometry from Gazebo diff-drive plugin
+    # Only fuse velocity (vx, vyaw). Do NOT fuse absolute X, Y to prevent frame conflicts with IMU yaw
     odom0: wheel/odom
-    odom0_config: [true,  true,  false,
+    odom0_config: [false, false, false,
                    false, false, false,
-                   true,  true,  false,
-                   false, false, false,
+                   true,  false, false,
+                   false, false, true,
                    false, false, false]
     odom0_queue_size: 10
     odom0_nodelay: true
@@ -33,12 +34,14 @@ ekf_filter_node:
     odom0_relative: false
 
     # 2. IMU Sensor (BNO055 / MPU6050)
+    # Fuse orientation (yaw) and angular velocity (vyaw).
+    # NEVER fuse linear acceleration (ax, ay, az) because double integration creates massive drift!
     imu0: imu/data
     imu0_config: [false, false, false,
                   false, false, true,
                   false, false, false,
                   false, false, true,
-                  true,  false, false]
+                  false, false, false]
     imu0_queue_size: 10
     imu0_nodelay: true
     imu0_differential: false
