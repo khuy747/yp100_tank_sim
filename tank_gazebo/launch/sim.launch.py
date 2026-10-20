@@ -5,6 +5,7 @@ from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     pkg_tank_description = get_package_share_directory('tank_description')
@@ -14,9 +15,9 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     world_file = LaunchConfiguration('world', default=os.path.join(pkg_tank_gazebo, 'worlds', 'indoor_obstacle.world'))
 
-    # Robot Description from Xacro
+    # Robot Description from Xacro wrapped in ParameterValue for ROS 2 Humble compatibility
     xacro_file = os.path.join(pkg_tank_description, 'urdf', 'yp100_tank.urdf.xacro')
-    robot_description = Command(['xacro ', xacro_file])
+    robot_description = ParameterValue(Command(['xacro ', xacro_file]), value_type=str)
 
     # Robot State Publisher Node
     node_robot_state_publisher = Node(
