@@ -8,6 +8,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     pkg_share = get_package_share_directory('tank_description')
     default_model_path = os.path.join(pkg_share, 'urdf', 'yp100_tank.urdf.xacro')
+    default_rviz_config_path = os.path.join(pkg_share, 'rviz', 'tank_model.rviz')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
 
@@ -33,6 +34,7 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         name='rviz2',
+        arguments=['-d', default_rviz_config_path],
         output='screen'
     )
 
