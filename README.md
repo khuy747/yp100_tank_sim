@@ -76,10 +76,15 @@ Khởi động môi trường thế giới Gazebo, nạp mô hình YP100 và ch�
 ros2 launch tank_bringup tank_sim.launch.py
 ```
 
-Mở một terminal mới để lái xe thủ công bằng bàn phím:
+Mở một terminal mới để lái xe bằng cụm phím **W-A-S-D** quen thuộc (hoặc 4 phím mũi tên):
 ```bash
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
+ros2 run tank_bringup teleop_wasd
 ```
+- **W / S**: Tiến / Lùi
+- **A / D**: Quay trái / Quay phải
+- **Q / E**: Tiến rẽ trái / Tiến rẽ phải
+- **Space hoặc X**: Phanh / Dừng khẩn cấp
+- **R / F**: Tăng / Giảm tốc độ
 
 ---
 
@@ -90,7 +95,10 @@ Khởi động Gazebo + EKF + SLAM Toolbox + RViz2:
 ros2 launch tank_bringup tank_slam.launch.py
 ```
 
-1. Mở terminal phụ chạy `teleop_twist_keyboard` để lái xe đi dạo quanh các phòng và hành lang.
+1. Mở terminal phụ chạy bộ điều khiển WASD để lái xe đi dạo quanh các phòng và hành lang:
+```bash
+ros2 run tank_bringup teleop_wasd
+```
 2. Theo dõi bản đồ 2D được dựng dần trên RViz2.
 3. Khi bản đồ đã hoàn chỉnh, lưu bản đồ lại bằng lệnh:
 

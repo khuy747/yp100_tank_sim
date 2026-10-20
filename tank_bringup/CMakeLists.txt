@@ -12,4 +12,15 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
+install(
+  PROGRAMS scripts/teleop_wasd.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(
+  PROGRAMS scripts/teleop_wasd.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME teleop_wasd
+)
+
 ament_package()
