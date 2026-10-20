@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="yp100_tank">
+
+  <!-- Core Physical & Kinematic Model -->
+  <xacro:include filename="yp100_core.xacro"/>
+
+  <!-- Gazebo Differential Drive Plugin -->
+  <xacro:include filename="gazebo_control.xacro"/>
+
+  <!-- RPLIDAR A2M12 Laser Scanner -->
+  <xacro:include filename="lidar.xacro"/>
+
+  <!-- 6-DOF IMU Sensor -->
+  <xacro:include filename="imu.xacro"/>
+
+</robot>

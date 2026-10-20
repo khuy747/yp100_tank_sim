@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Dimensions and Properties for YP100 Tank Chassis -->
+  <xacro:property name="chassis_length" value="0.300"/>
+  <xacro:property name="chassis_width" value="0.180"/>
+  <xacro:property name="chassis_height" value="0.080"/>
+  <xacro:property name="chassis_mass" value="2.0"/>
+
+  <xacro:property name="wheel_radius" value="0.0325"/>
+  <xacro:property name="wheel_width" value="0.040"/>
+  <xacro:property name="wheel_mass" value="0.2"/>
+  <xacro:property name="wheel_separation" value="0.220"/>
+
+  <xacro:property name="caster_radius" value="0.020"/>
+  <xacro:property name="caster_mass" value="0.1"/>
+
+  <!-- Colors -->
+  <material name="yp100_gold">
+    <color rgba="0.85 0.65 0.13 1.0"/>
+  </material>
+
+  <material name="dark_grey">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+
+  <material name="black">
+    <color rgba="0.05 0.05 0.05 1.0"/>
+  </material>
+
+  <material name="red">
+    <color rgba="0.8 0.1 0.1 1.0"/>
+  </material>
+
+  <!-- Base Footprint (Ground Projection) -->
+  <link name="base_footprint"/>
+
+  <!-- Base Joint -->
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Base Link (Chassis) -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 ${chassis_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+      <material name="yp100_gold"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${chassis_height/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 ${chassis_height/2}" rpy="0 0 0"/>
+      <mass value="${chassis_mass}"/>
+      <inertia 
+        ixx="${(1/12) * chassis_mass * (chassis_width*chassis_width + chassis_height*chassis_height)}" 
+        ixy="0.0" 
+        ixz="0.0"
+        iyy="${(1/12) * chassis_mass * (chassis_length*chassis_length + chassis_height*chassis_height)}" 
+        iyz="0.0"
+        izz="${(1/12) * chassis_mass * (chassis_length*chassis_length + chassis_width*chassis_width)}"/>
+    </inertial>
+  </link>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Gold</material>
+  </gazebo>
+
+  <!-- Left Drive Wheel -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="0 ${wheel_separation/2} 0" rpy="-${pi/2} 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${wheel_mass}"/>
+      <inertia 
+        ixx="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_width*wheel_width)}" 
+        ixy="0.0" 
+        ixz="0.0"
+        iyy="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_width*wheel_width)}" 
+        iyz="0.0"
+        izz="${(1/2) * wheel_mass * wheel_radius * wheel_radius}"/>
+    </inertial>
+  </link>
+
+  <gazebo reference="left_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="1000000.0"/>
+    <kd value="100.0"/>
+  </gazebo>
+
+  <!-- Right Drive Wheel -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="0 -${wheel_separation/2} 0" rpy="${pi/2} 0 0"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${wheel_mass}"/>
+      <inertia 
+        ixx="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_width*wheel_width)}" 
+        ixy="0.0" 
+        ixz="0.0"
+        iyy="${(1/12) * wheel_mass * (3*wheel_radius*wheel_radius + wheel_width*wheel_width)}" 
+        iyz="0.0"
+        izz="${(1/2) * wheel_mass * wheel_radius * wheel_radius}"/>
+    </inertial>
+  </link>
+
+  <gazebo reference="right_wheel">
+    <material>Gazebo/DarkGrey</material>
+    <mu1 value="1.0"/>
+    <mu2 value="1.0"/>
+    <kp value="1000000.0"/>
+    <kd value="100.0"/>
+  </gazebo>
+
+  <!-- Front Support/Caster Wheel (Frictionless for pitch stability in Gazebo) -->
+  <joint name="front_caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="front_caster"/>
+    <origin xyz="${chassis_length/2 - 0.03} 0 ${caster_radius - wheel_radius}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="front_caster">
+    <visual>
+      <geometry>
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${caster_mass}"/>
+      <inertia 
+        ixx="${(2/5) * caster_mass * caster_radius * caster_radius}" ixy="0.0" ixz="0.0"
+        iyy="${(2/5) * caster_mass * caster_radius * caster_radius}" iyz="0.0"
+        izz="${(2/5) * caster_mass * caster_radius * caster_radius}"/>
+    </inertial>
+  </link>
+
+  <gazebo reference="front_caster">
+    <material>Gazebo/Black</material>
+    <mu1 value="0.001"/>
+    <mu2 value="0.001"/>
+  </gazebo>
+
+  <!-- Rear Support/Caster Wheel (Frictionless for pitch stability in Gazebo) -->
+  <joint name="rear_caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rear_caster"/>
+    <origin xyz="-${chassis_length/2 - 0.03} 0 ${caster_radius - wheel_radius}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="rear_caster">
+    <visual>
+      <geometry>
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${caster_mass}"/>
+      <inertia 
+        ixx="${(2/5) * caster_mass * caster_radius * caster_radius}" ixy="0.0" ixz="0.0"
+        iyy="${(2/5) * caster_mass * caster_radius * caster_radius}" iyz="0.0"
+        izz="${(2/5) * caster_mass * caster_radius * caster_radius}"/>
+    </inertial>
+  </link>
+
+  <gazebo reference="rear_caster">
+    <material>Gazebo/Black</material>
+    <mu1 value="0.001"/>
+    <mu2 value="0.001"/>
+  </gazebo>
+
+</robot>
